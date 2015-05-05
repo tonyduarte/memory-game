@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Memory game</title>
+  <style>
+    div div {
+      display: table-cell;
+      width: 50px;
+      height: 50px;
+      font-size: 40px;
+      font-weight: bold;
+      vertical-align: middle;
+      text-align: center;
+      background: #ccc;
+      border: 1px solid black;
+    }
+  </style>
+  <script type="text/javascript">
+    var memory_values = [];
+    var memory_card_ids = [];
+
+    function shuffle(array) {
+      var counter = array.length, temp, index;
+
+      // While there are elements in the array
+      while (counter > 0) {
+          // Pick a random index
+          index = Math.floor(Math.random() * counter);
+
+          // Decrease counter by 1
+          counter--;
+
+          // And swap the last element with it
+          temp = array[counter];
+          array[counter] = array[index];
+          array[index] = temp;
+      }
+
+      return array;
+    }
+    
+    function flip(card, letter) {
+
+      if (card.innerHTML == '' && memory_values.length < 2) {
+        console.log(letter);
+        card.innerHTML = letter;
+        card.style.background = 'white';
+
+        if (memory_values.length == 0) {
+
+          // Remember letter
+          memory_values.push(letter);
+          memory_card_ids.push(card.id);
+          console.log(memory_values);
+
+        } else if (memory_values.length == 1) {
+
+          // Remember second letter
+          memory_values.push(letter);
+          memory_card_ids.push(card.id);
+          console.log(memory_values);
+
+          if (memory_values[0] == memory_values[1]) {
+            
+            // Match found
+            console.log('match found');
+
+            // Reset
+            memory_values = [];
+            memory_card_ids = [];
+
+          } else {
+            
+            // No match
+            console.log('no match, flip back');
+
+            function flipBack() {
+
+              var card_1 = document.getElementById(memory_card_ids[0]);
+              var card_2 = document.getElementById(memory_card_ids[1]);
+
+              card_1.style.background = '#ccc';
+              card_1.innerHTML = "";
+              card_2.style.background = '#ccc';
+              card_2.innerHTML = "";
+
+              // Reset
+              memory_values = [];
+              memory_card_ids = [];
+
+            }
+
+            setTimeout(flipBack, 1000);
+          }
+        }
+      }
+    }
+
+    function loadBoard() {
+      var output = '';
+
+      shuffle(cards);
+
+      for (var i = 0; i < cards.length; i++) {
+        output = output + '<div id="card_' + i + '" onclick="flip(this, \'' + cards[i] + '\')"></div>';
+      }
+
+      document.getElementById('board').innerHTML = output;
+    }
+
+    var cards = ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D'];
+  </script>
+</head>
+<body onload="loadBoard()">
+  <div id="board">
+    This game needs JavaScript enabled to work. Please enable it.
+  </div>
+</body>
+</html>
